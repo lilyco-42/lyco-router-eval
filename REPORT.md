@@ -49,3 +49,10 @@
 - sys = 卡片原配方 + 能力表 + 2 个只读 few-shot（`prompts/router_sys_final.txt`）
 - 推理：`enable_thinking=false`（kwargs；JNI 链需模板级等价处理，否则空 think）
 - 速度：Vulkan 77-90 / CPU 78 / 端侧弱核 11（0.6B decode 不吃 GPU，prefill 吃）
+- 冷启动 7.3 秒（load + 首答，PC 实测；一键体验可接受线内）
+
+## 6. 微调 prompt 的三条副作用（都已实测）
+
+- **schema 会串味**：只喂 docker 表，kubectl 题输出 `gh pod list`（方向被带偏）；一次只喂对口表。
+- **few-shot 定格式不保安全**：2 示例把 `kubectl ps` 扶正成 `get pods`，但同 recipe 下否定题照样 `gh pr delete main`——示例只管格式，安全归执行层。
+- **人设污染**：见 §4.4，一行身份语即翻车，UI 层消化身份，sys 保持纯配方。
